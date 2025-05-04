@@ -39,7 +39,16 @@ class Task extends Component {
 
   render() {
     return this.props.sub.map((items) => {
-      return <p key={items.id}>{items.name}</p>;
+      return (
+        <div key={items.id}>
+          <input
+            checked={items.done}
+            onChange={() => this.props.toggle(items.id, !items.done)}
+            type="checkbox"
+          />
+          <span>{items.name}</span>
+        </div>
+      );
     });
   }
 }
@@ -49,6 +58,7 @@ class Category extends Component {
     super(props);
     this.state = { items: this.props.task };
     this.onSubmit = this.onSubmit.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
   onSubmit(newTask) {
@@ -60,12 +70,21 @@ class Category extends Component {
     });
   }
 
+  toggle(id, status) {
+    this.setState((prev) => {
+      console.log(prev.items.sub);
+      const rqItem = prev.items.sub.find((task) => task.id === id);
+      rqItem.done = status;
+      return prev;
+    });
+  }
+
   render() {
     return (
       <div>
         <h2>{this.props.task.name}</h2>
         <Input onSubmit={this.onSubmit} />
-        <Task sub={this.props.task.sub} />
+        <Task sub={this.props.task.sub} toggle={this.toggle} />
       </div>
     );
   }
